@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.dao.CityDao">
+    <resultMap id="queryCityByID" type="com.hl.entity.City">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <collection property="countryList" ofType="com.hl.entity.Country" column="city_id">
+            <id column="id" property="id" jdbcType="INTEGER" />
+            <result column="name" property="name" jdbcType="VARCHAR" />
+            <result column="city_id" property="cityId" jdbcType="INTEGER" />
+        </collection>
+    </resultMap>
+    <select id="query" parameterType="integer" resultMap="queryCityByID" timeout="3000">
+        select a.id,a.name,b.id as country_id,b.name,b.city_id from tcity a left join tcountry b on a.id=b.city_id where a.id=#{id}
+    </select>
+    <insert id="insertCity" keyColumn="id" keyProperty="id" parameterType="com.hl.entity.City">
+        insert into tcity (id,name) values ( #{ id,jdbcType=INTEGER },#{ name,jdbcType=VARCHAR } )
+    </insert>
+</mapper>
